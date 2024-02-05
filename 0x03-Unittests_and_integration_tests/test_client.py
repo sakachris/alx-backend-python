@@ -2,27 +2,37 @@
 ''' test_client.py '''
 
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock, PropertyMock
+from parameterized import parameterized
 from client import GithubOrgClient
+from typing import Dict
 
 
 class TestGithubOrgClient(unittest.TestCase):
     '''
     TestGithubOrgClient class
     '''
-    @patch('client.get_json')
     @parameterized.expand([
-        ("google",),
-        ("abc",),
+        ("google", {'login': "google"}),
+        ("abc", {'login': "abc"}),
     ])
-    def test_org(self, org_name: str) -> None:
-        ''' tests the class '''
-        expected_url = f"https://api.github.com/orgs/{org_name}"
+    @patch("client.get_json",)
+    def test_org(self, org: str, resp: Dict, mocked_fxn: MagicMock) -> None:
+        ''' testing GithubOrgClient response '''
+        mocked_fxn.return_value = MagicMock(return_value=resp)
+        gh_org_client = GithubOrgClient(org)
+        self.assertEqual(gh_org_client.org(), resp)
+        mocked_fxn.assert_called_once_with(
+            f"https://api.github.com/orgs/{org}"
+        )
 
-        with patch('client.get_json') as mock_get_json:
-            mock_get_json.return_value = {}
-            client = GithubOrgClient(org_name)
-            org_info = client.org()
-
-            mock_get_json.assert_called_once_with(expected_url)
-            self.assertEqual(org_info, mock_get_json.return_value)
+    @patch("client.GithubOrgClient.org", new_callable=PropertyMock)
+    def test_public_repos_url(self, mock_org):
+        ''' test public repos url '''
+        mock_org.return_value = {
+                'repos_url': "https://api.github.com/users/google/repos"
+        }
+        self.assertEqual(
+            GithubOrgClient("google")._public_repos_url,
+            "https://api.github.com/users/google/repos",
+        )
