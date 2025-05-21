@@ -9,11 +9,11 @@ def log_queries(func):
     def wrapper(*args, **kwargs):
         # Get current timestamp
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
+
         # Determine which SQL query is being passed
         if args:
             print(f"[{timestamp}] Executing SQL query: {args[0]}")
-        elif 'query' in kwargs:
+        elif "query" in kwargs:
             print(f"[{timestamp}] Executing SQL query: {kwargs['query']}")
         else:
             print(f"[{timestamp}] No SQL query found in arguments.")
