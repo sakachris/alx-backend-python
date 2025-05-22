@@ -31,23 +31,26 @@ class DatabaseConnection:
 
 # Create a test database and table if not exists (for demonstration)
 def setup_demo_data():
-    with DatabaseConnection("example.db") as cursor:
+    with DatabaseConnection("0-example.db") as cursor:
+        cursor.execute("DROP TABLE IF EXISTS users")
         cursor.execute(
             """
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL
             )
         """
         )
-        cursor.execute("INSERT INTO users (name) VALUES (?)", ("Alice",))
-        cursor.execute("INSERT INTO users (name) VALUES (?)", ("Bob",))
+        cursor.execute("INSERT INTO users (name) VALUES (?)", ("Peter",))
+        cursor.execute("INSERT INTO users (name) VALUES (?)", ("Anne",))
+        cursor.execute("INSERT INTO users (name) VALUES (?)", ("Martin",))
+        cursor.execute("INSERT INTO users (name) VALUES (?)", ("Jane",))
 
 
 setup_demo_data()
 
 # Use the custom context manager to fetch data
-with DatabaseConnection("example.db") as cursor:
+with DatabaseConnection("0-example.db") as cursor:
     cursor.execute("SELECT * FROM users")
     results = cursor.fetchall()
     for row in results:

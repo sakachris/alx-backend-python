@@ -2,12 +2,13 @@ import asyncio
 import aiosqlite
 
 
-# Setup function to prepare demo database
+# --------- Example Usage ---------
 async def setup_demo_data():
-    async with aiosqlite.connect("example.db") as db:
+    async with aiosqlite.connect("3-example.db") as db:
+        await db.execute("DROP TABLE IF EXISTS users")
         await db.execute(
             """
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL
@@ -17,17 +18,29 @@ async def setup_demo_data():
         await db.execute("DELETE FROM users")  # Clear table before inserting
         await db.executemany(
             "INSERT INTO users (name, age) VALUES (?, ?)",
-            [("Alice", 25), ("Bob", 45), ("Charlie", 35), ("Diana", 60), ("Eve", 22)],
+            [
+                ("Peter", 22),
+                ("Anne", 30),
+                ("Martin", 27),
+                ("Joy", 50),
+                ("Diana", 19),
+                ("Eve", 35),
+                ("Jane", 15),
+                ("Tim", 55),
+                ("John", 40),
+                ("Alice", 28),
+                ("Simon", 20),
+            ],
         )
         await db.commit()
 
 
 # Fetch all users
 async def async_fetch_users():
-    async with aiosqlite.connect("example.db") as db:
+    async with aiosqlite.connect("3-example.db") as db:
         async with db.execute("SELECT * FROM users") as cursor:
             users = await cursor.fetchall()
-            print("All Users:")
+            print("\nAll Users:")
             for user in users:
                 print(user)
             return users
@@ -35,7 +48,7 @@ async def async_fetch_users():
 
 # Fetch users older than 40
 async def async_fetch_older_users():
-    async with aiosqlite.connect("example.db") as db:
+    async with aiosqlite.connect("3-example.db") as db:
         async with db.execute("SELECT * FROM users WHERE age > 40") as cursor:
             users = await cursor.fetchall()
             print("\nUsers older than 40:")

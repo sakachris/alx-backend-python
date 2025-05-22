@@ -28,13 +28,14 @@ class ExecuteQuery:
         return False  # Propagate any exceptions
 
 
-# --------- Setup database for demonstration ---------
+# --------- Example Usage ---------
 def setup_demo_data():
-    with sqlite3.connect("example.db") as conn:
+    with sqlite3.connect("1-example.db") as conn:
         cursor = conn.cursor()
+        cursor.execute("DROP TABLE IF EXISTS users")
         cursor.execute(
             """
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL
@@ -43,7 +44,17 @@ def setup_demo_data():
         )
         cursor.executemany(
             "INSERT INTO users (name, age) VALUES (?, ?)",
-            [("Alice", 22), ("Bob", 30), ("Charlie", 27), ("Diana", 19), ("Eve", 35)],
+            [
+                ("Peter", 22),
+                ("Anne", 30),
+                ("Martin", 27),
+                ("Diana", 19),
+                ("Eve", 35),
+                ("Jane", 15),
+                ("John", 40),
+                ("Alice", 28),
+                ("Simon", 20),
+            ],
         )
         conn.commit()
 
@@ -54,6 +65,6 @@ setup_demo_data()
 query = "SELECT * FROM users WHERE age > ?"
 param = (25,)
 
-with ExecuteQuery("example.db", query, param) as results:
+with ExecuteQuery("1-example.db", query, param) as results:
     for row in results:
         print(row)
