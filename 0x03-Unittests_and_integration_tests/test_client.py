@@ -28,7 +28,9 @@ class TestGithubOrgClient(unittest.TestCase):
         mocked_fxn.return_value = MagicMock(return_value=resp)
         gh_org_client = GithubOrgClient(org)
         self.assertEqual(gh_org_client.org(), resp)
-        mocked_fxn.assert_called_once_with(f"https://api.github.com/orgs/{org}")
+        mocked_fxn.assert_called_once_with(
+            f"https://api.github.com/orgs/{org}"
+        )
 
     @patch("client.GithubOrgClient.org", new_callable=PropertyMock)
     def test_public_repos_url(self, mock_org):
