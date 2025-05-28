@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+l$m!ab*k)g5ypb##z7ure-%-*78#ehwduzl1-6j%$av=beaut'
+SECRET_KEY = 'django-insecure-ndrj_^%*%)3!@1y%w#fcd&&u&46*0gvc2iv21wwqop9*5^b68i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -53,15 +53,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'messaging_app.urls'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',
-#     ],
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.SessionAuthentication',
-#         'rest_framework.authentication.BasicAuthentication',
-#     ],
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+}
 
 
 TEMPLATES = [
