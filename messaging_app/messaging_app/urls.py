@@ -22,6 +22,15 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('chats.urls')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    
+    path('api/docs/', include('rest_framework_docs.urls')),
+    path('api/docs/', include('drf_spectacular.urls')),
+    # path('api/docs/swagger-ui/', include('drf_spectacular_swagger.urls')),
+    # path('api/docs/redoc/', include('drf_spectacular_redoc.urls')),
+    # path('api/docs/schema/', include('drf_spectacular.urls')),
+    # path('api/docs/schema/swagger-ui/', include('drf_spectacular_swagger.urls')),
+    # path('api/docs/schema/redoc/', include('drf_spectacular_redoc.urls')),
 ]
 
 if settings.DEBUG:
