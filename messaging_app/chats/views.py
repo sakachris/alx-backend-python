@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Conversation, Message, CustomUser
@@ -7,14 +7,20 @@ from django.shortcuts import get_object_or_404
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing conversations, allowing users to create and list conversations."""
+
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ["created_at"]
 
     def get_queryset(self):
+        """Return conversations for the authenticated user."""
         return self.request.user.conversations.all()
 
     def create(self, request, *args, **kwargs):
+        """Create a new conversation with the authenticated user and specified participants."""
         participant_ids = request.data.get("participants", [])
         if not participant_ids:
             return Response(
@@ -38,17 +44,23 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 
 class MessageViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing messages within conversations, allowing users to send and retrieve messages."""
+
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["message_body"]
 
     def get_queryset(self):
+        """Return messages for a specific conversation based on the conversation_id query parameter."""
         conversation_id = self.request.query_params.get("conversation_id")
         if conversation_id:
             return Message.objects.filter(conversation__conversation_id=conversation_id)
         return Message.objects.none()
 
     def create(self, request, *args, **kwargs):
+        """Send a message in a specified conversation."""
         conversation_id = request.data.get("conversation")
         message_body = request.data.get("message_body")
 
