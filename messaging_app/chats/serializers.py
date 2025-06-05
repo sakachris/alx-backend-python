@@ -49,7 +49,8 @@ class ConversationSerializer(serializers.ModelSerializer):
     """Serializer for the Conversation model, including participants and messages."""
 
     participants = UserSerializer(many=True, read_only=True)
-    messages = MessageSerializer(many=True, read_only=True, source="messages")
+    # messages = MessageSerializer(many=True, read_only=True, source="messages")
+    messages = MessageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Conversation
