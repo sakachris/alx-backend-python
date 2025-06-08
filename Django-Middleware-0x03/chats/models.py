@@ -1,3 +1,5 @@
+# Django-Middleware-0x03/chats/models.py
+
 import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
