@@ -60,3 +60,9 @@ def send_message(request):
     )
 
     return HttpResponseRedirect("/messaging/inbox/")
+
+
+@login_required
+def unread_messages(request):
+    unread_msgs = Message.unread.unread_for_user(request.user)
+    return render(request, "messaging/unread.html", {"unread_messages": unread_msgs})
