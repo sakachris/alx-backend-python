@@ -23,6 +23,13 @@ class MessageHistory(models.Model):
         Message, on_delete=models.CASCADE, related_name="history"
     )
     old_content = models.TextField()
+    edited_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="edited_messages",
+    )
     edited_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
