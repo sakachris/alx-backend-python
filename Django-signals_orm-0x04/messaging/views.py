@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseRedirect
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from .models import Message
 
 
@@ -68,3 +70,22 @@ def unread_messages(request):
         "id", "sender__username", "content", "timestamp"
     )
     return render(request, "messaging/unread.html", {"unread_messages": unread_msgs})
+
+
+@cache_page(60)  # Cache for 60 seconds
+@login_required
+def conversation_messages(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+    messages = (
+        Message.objects.filter(
+            sender__in=[request.user, other_user],
+            receiver__in=[request.user, other_user],
+        )
+        .select_related("sender", "receiver")
+        .order_by("timestamp")
+    )
+    return render(
+        request,
+        "messaging/conversation.html",
+        {"messages": messages, "other_user": other_user},
+    )
