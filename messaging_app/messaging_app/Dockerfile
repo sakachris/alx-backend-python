@@ -40,7 +40,7 @@ COPY . .
 EXPOSE 8000
 
 # Development: use runserver
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "-p", "0.0.0.0:8000"]
 
 # Production:
 # CMD ["gunicorn", "messaging_app.wsgi:application", "--bind", "0.0.0.0:8000"]
