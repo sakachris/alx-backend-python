@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: messaging-container
-        image: messaging-app:local3
+        image: messaging-app:local
         ports:
         - containerPort: 8000
         env:
