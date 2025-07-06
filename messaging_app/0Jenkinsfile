@@ -2,19 +2,17 @@ pipeline {
     agent any
 
     tools {
-        python 'Python3' // Make sure Python is configured in Jenkins tools
+        python 'Python3' // Ensure this is configured in Jenkins global tool config
     }
 
     environment {
         VENV_DIR = 'venv'
-        DOCKER_IMAGE = 'your-dockerhub-username/messaging_app'
-        DOCKER_TAG = 'latest'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git branch: 'main', // specify branch
                     credentialsId: 'github-creds',
                     url: 'https://github.com/sakachris/alx-backend-python.git'
             }
@@ -44,27 +42,6 @@ pipeline {
         stage('Publish Report') {
             steps {
                 junit 'messaging_app/report.xml'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh '''
-                        docker build -t $DOCKER_IMAGE:$DOCKER_TAG -f messaging_app/Dockerfile .
-                    '''
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
-                    sh '''
-                        echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                        docker push $DOCKER_IMAGE:$DOCKER_TAG
-                    '''
-                }
             }
         }
     }
