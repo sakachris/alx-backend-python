@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI with Linting and Coverage
 
 on:
   push:
@@ -44,17 +44,32 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install MySQL dependencies
+    - name: Install MySQL client and dependencies
       run: sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev
 
-    - name: Install dependencies
+    - name: Install Python dependencies
       run: |
         python -m venv venv
         source venv/bin/activate
         pip install --upgrade pip
         pip install -r messaging_app/requirements.txt
+        pip install flake8 pytest pytest-cov
 
-    - name: Run Django Tests
+    - name: Run Linting (flake8)
       run: |
         source venv/bin/activate
-        python messaging_app/manage.py test
+        flake8 messaging_app/
+      # This step fails the build if flake8 exits with non-zero
+
+    - name: Run Django tests with coverage
+      run: |
+        source venv/bin/activate
+        pytest --cov=messaging_app --cov-report=xml --cov-report=html
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: |
+          htmlcov/
+          coverage.xml
